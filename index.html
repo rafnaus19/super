@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Beauty Tools Catalog</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #ff6b8b;
+            --secondary: #6a5af9;
+            --light: #f8f9fa;
+            --dark: #333;
+            --gray: #6c757d;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+        }
+        
+        body {
+            background-color: #fefefe;
+            color: var(--dark);
+            line-height: 1.6;
+        }
+        
+        header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 2rem 1rem;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        
+        .logo {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        h1 {
+            font-size: 2.2rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+        
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            padding: 1rem;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+        
+        .search-box {
+            flex-grow: 1;
+            max-width: 500px;
+        }
+        
+        .search-box input {
+            width: 100%;
+            padding: 0.8rem 1.2rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 50px;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+        
+        .search-box input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(255, 107, 139, 0.2);
+        }
+        
+        .filter-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+        
+        .filter-btn {
+            padding: 0.6rem 1.2rem;
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .filter-btn:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+        
+        .filter-btn.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+        
+        .sort-options select {
+            padding: 0.6rem 1rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+        }
+        
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+        
+        .product-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 6px 16px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .product-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 24px rgba(0,0,0,0.12);
+        }
+        
+        .product-img {
+            height: 220px;
+            background-color: #f8f9fa;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .product-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain; /* CHANGED from 'cover' to 'contain' */
+            transition: transform 0.5s ease;
+            background-color: white;
+        }
+        
+        .product-card:hover .product-img img {
+            transform: scale(1.05);
+        }
+        
+        /* Image resize controls */
+        .image-controls {
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
+            display: flex;
+            gap: 5px;
+            z-index: 10;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        
+        .product-img:hover .image-controls {
+            opacity: 1;
+        }
+        
+        .resize-btn {
+            width: 30px;
+            height: 30px;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+        }
+        
+        .resize-btn:hover {
+            background: var(--primary);
+        }
+        
+        .product-img .icon-fallback {
+            font-size: 4rem;
+            color: var(--primary);
+            opacity: 0.8;
+        }
+        
+        .product-category {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: var(--primary);
+            color: white;
+            padding: 0.3rem 0.8rem;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            z-index: 2;
+        }
+        
+        .product-info {
+            padding: 1.5rem;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .product-name {
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+            color: var(--dark);
+        }
+        
+        .product-description {
+            color: var(--gray);
+            margin-bottom: 1rem;
+            font-size: 0.95rem;
+            flex-grow: 1;
+        }
+        
+        .product-price {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+        
+        .product-specs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1.2rem;
+        }
+        
+        .spec-tag {
+            background: #f0f2f5;
+            padding: 0.3rem 0.7rem;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            color: var(--gray);
+        }
+        
+        .cart-btn {
+            background: var(--secondary);
+            color: white;
+            border: none;
+            padding: 0.8rem;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+        
+        .cart-btn:hover {
+            background: #5a4df7;
+        }
+        
+        .cart-btn i {
+            font-size: 1.1rem;
+        }
+        
+        footer {
+            background: #2a2a3c;
+            color: white;
+            padding: 3rem 1rem;
+            text-align: center;
+        }
+        
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .footer-logo {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+        
+        .contact-info {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+        
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .copyright {
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            color: rgba(255,255,255,0.7);
+        }
+        
+        .no-results {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 3rem;
+            font-size: 1.2rem;
+            color: var(--gray);
+        }
+        
+        /* Image fit modes */
+        .img-fit-contain { object-fit: contain !important; }
+        .img-fit-cover { object-fit: cover !important; }
+        .img-fit-fill { object-fit: fill !important; }
+        
+        /* Loading state for images */
+        .product-img.loading {
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: loading 1.5s infinite;
+        }
+        
+        @keyframes loading {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+        
+        @media (max-width: 768px) {
+            .products-grid {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+                gap: 1.5rem;
+            }
+            
+            .controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .filter-buttons {
+                justify-content: center;
+            }
+            
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            .image-controls {
+                opacity: 1; /* Always show on mobile */
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .products-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .product-img {
+                height: 200px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <i class="fas fa-spa"></i>
+        </div>
+        <h1>Beauty Tools Catalog</h1>
+        <p class="subtitle">Discover our premium collection of professional beauty tools for skincare, haircare, and grooming</p>
+    </header>
+    
+    <div class="container">
+        <div class="controls">
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="Search beauty tools...">
+            </div>
+            
+            <div class="filter-buttons">
+                <button class="filter-btn active" data-filter="all">All Tools</button>
+                <button class="filter-btn" data-filter="skincare">Skincare</button>
+                <button class="filter-btn" data-filter="haircare">Haircare</button>
+                <button class="filter-btn" data-filter="makeup">Makeup</button>
+                <button class="filter-btn" data-filter="grooming">Grooming</button>
+            </div>
+            
+            <div class="sort-options">
+                <select id="sortSelect">
+                    <option value="name">Sort by Name</option>
+                    <option value="price-low">Price: Low to High</option>
+                    <option value="price-high">Price: High to Low</option>
+                </select>
+            </div>
+        </div>
+        
+        <div class="products-grid" id="productsGrid">
+            <!-- Products will be loaded here by JavaScript -->
+        </div>
+    </div>
+    
+    <footer>
+        <div class="footer-content">
+            <div class="footer-logo">
+                <i class="fas fa-spa"></i>
+            </div>
+            <p>Professional Beauty Tools Catalog</p>
+            
+            <div class="contact-info">
+                <div class="contact-item">
+                    <i class="fas fa-envelope"></i>
+                    <span>contact@beautytools.com</span>
+                </div>
+                <div class="contact-item">
+                    <i class="fas fa-phone"></i>
+                    <span>(123) 456-7890</span>
+                </div>
+                <div class="contact-item">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <span>123 Beauty Street, Glam City</span>
+                </div>
+            </div>
+            
+            <div class="copyright">
+                &copy; 2023 Beauty Tools Catalog. All rights reserved.
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Beauty tools data - USING YOUR IMGBB DIRECT LINKS
+        const beautyTools = [
+            {
+                id: 1,
+                name: "Rose Quartz Facial Roller",
+                category: "skincare",
+                description: "Natural rose quartz facial roller to reduce puffiness, improve circulation, and promote lymphatic drainage.",
+                price: 24.99,
+                specs: ["Rose Quartz", "Dual-ended", "Cooling Effect"],
+                photo: "https://i.ibb.co/zhjKYsJ6/laser-thinning-1.jpg" // YOUR IMAGE - Direct link
+            },
+            {
+                id: 2,
+                name: "Professional Hair Dryer",
+                category: "haircare",
+                description: "Ionic hair dryer with multiple heat settings for fast drying and frizz-free hair.",
+                price: 89.99,
+                specs: ["Ionic Technology", "3 Heat Settings", "Cool Shot"],
+                photo: "https://i.ibb.co/ynXQBy4x/2pl1.jpg"
+            },
+            {
+                id: 3,
+                name: "LED Makeup Mirror",
+                category: "makeup",
+                description: "Lighted makeup mirror with adjustable LED lighting and 10x magnification for precision application.",
+                price: 65.50,
+                specs: ["LED Lighting", "10x Magnification", "Adjustable Brightness"],
+                photo: "https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=800&h=600&fit=crop&auto=format"
+            },
+            {
+                id: 4,
+                name: "Electric Nail File",
+                category: "grooming",
+                description: "Professional electric nail file with multiple attachments for manicures and pedicures.",
+                price: 42.99,
+                specs: ["Rechargeable", "6 Attachments", "Variable Speed"],
+                photo: "https://images.unsplash.com/photo-1607779097338-56f5e1f15754?w=800&h=600&fit=crop&auto=format"
+            },
+            {
+                id: 5,
+                name: "Microdermabrasion Device",
+                category: "skincare",
+                description: "At-home microdermabrasion device for exfoliation and skin rejuvenation.",
+                price: 129.99,
+                specs: ["Diamond Tip", "3 Intensity Levels", "Vacuum Suction"],
+                photo: "https://images.unsplash.com/photo-1570196911496-66bd58a5b7b4?w=800&h=600&fit=crop&auto=format"
+            },
+            {
+                id: 6,
+                name: "Ceramic Hair Straightener",
+                category: "haircare",
+                description: "Tourmaline ceramic hair straightener with adjustable temperature up to 450°F.",
+                price: 75.00,
+                specs: ["Ceramic Plates", "Adjustable Temp", "Fast Heat-up"],
+                photo: "https://images.unsplash.com/photo-1522338140262-f46f5913618a?w=800&h=600&fit=crop&auto=format"
+            }
+        ];
+
+        // DOM Elements
+        const productsGrid = document.getElementById('productsGrid');
+        const searchInput = document.getElementById('searchInput');
+        const filterButtons = document.querySelectorAll('.filter-btn');
+        const sortSelect = document.getElementById('sortSelect');
+
+        // Current filter state
+        let currentFilter = 'all';
+        let currentSearch = '';
+        let currentSort = 'name';
+
+        // Initialize the app
+        function initApp() {
+            renderProducts(beautyTools);
+            setupEventListeners();
+        }
+
+        // Create a product image with resize controls
+        function createProductImage(product) {
+            const imgContainer = document.createElement('div');
+            imgContainer.className = 'product-img loading';
+            
+            const img = document.createElement('img');
+            img.alt = product.name;
+            img.loading = 'lazy';
+            img.className = 'img-fit-contain'; // Default to contain
+            
+            // Set the online photo URL
+            img.src = product.photo;
+            
+            // Handle successful load
+            img.onload = function() {
+                imgContainer.classList.remove('loading');
+                console.log(`Image loaded: ${product.name}`);
+                console.log(`Image dimensions: ${this.naturalWidth}x${this.naturalHeight}`);
+            };
+            
+            // Handle loading error
+            img.onerror = function() {
+                imgContainer.classList.remove('loading');
+                imgContainer.innerHTML = `
+                    <div style="text-align: center; padding: 2rem;">
+                        <i class="fas fa-image" style="font-size: 3rem; color: #ddd; margin-bottom: 1rem;"></i>
+                        <div style="color: #999;">Image failed to load</div>
+                        <div style="font-size: 0.8rem; margin-top: 0.5rem;">${product.name}</div>
+                    </div>
+                `;
+                console.error(`Failed to load image: ${product.photo}`);
+            };
+            
+            imgContainer.appendChild(img);
+            
+            // Add resize controls
+            const resizeControls = document.createElement('div');
+            resizeControls.className = 'image-controls';
+            resizeControls.innerHTML = `
+                <button class="resize-btn" title="Fit to container (show whole image)" onclick="changeImageFit(this, 'contain')">
+                    <i class="fas fa-compress-alt"></i>
+                </button>
+                <button class="resize-btn" title="Cover container (fill space, may crop)" onclick="changeImageFit(this, 'cover')">
+                    <i class="fas fa-expand-alt"></i>
+                </button>
+                <button class="resize-btn" title="Stretch to fill" onclick="changeImageFit(this, 'fill')">
+                    <i class="fas fa-arrows-alt-h"></i>
+                </button>
+            `;
+            imgContainer.appendChild(resizeControls);
+            
+            // Add category badge
+            const categoryNames = {
+                skincare: 'Skincare',
+                haircare: 'Haircare',
+                makeup: 'Makeup',
+                grooming: 'Grooming'
+            };
+            
+            const categoryBadge = document.createElement('span');
+            categoryBadge.className = 'product-category';
+            categoryBadge.textContent = categoryNames[product.category];
+            imgContainer.appendChild(categoryBadge);
+            
+            return imgContainer;
+        }
+
+        // Function to change image fit mode
+        function changeImageFit(button, fitMode) {
+            const imgContainer = button.closest('.product-img');
+            const img = imgContainer.querySelector('img');
+            
+            // Remove all fit classes
+            img.classList.remove('img-fit-contain', 'img-fit-cover', 'img-fit-fill');
+            
+            // Add selected fit class
+            img.classList.add(`img-fit-${fitMode}`);
+            
+            // Update button states
+            const buttons = imgContainer.querySelectorAll('.resize-btn');
+            buttons.forEach(btn => btn.style.background = 'rgba(0, 0, 0, 0.7)');
+            button.style.background = 'var(--primary)';
+            
+            // Update image style
+            img.style.objectFit = fitMode;
+            
+            console.log(`Changed image fit to: ${fitMode}`);
+        }
+
+        // Render products to the grid
+        function renderProducts(products) {
+            productsGrid.innerHTML = '';
+            
+            if (products.length === 0) {
+                productsGrid.innerHTML = `
+                    <div class="no-results">
+                        <i class="fas fa-search" style="font-size: 3rem; margin-bottom: 1rem;"></i>
+                        <p>No beauty tools found. Try a different search or filter.</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            products.forEach(product => {
+                const productCard = document.createElement('div');
+                productCard.className = 'product-card';
+                
+                // Create product image with online photo
+                const imgContainer = createProductImage(product);
+                productCard.appendChild(imgContainer);
+                
+                // Create product info section
+                const productInfo = document.createElement('div');
+                productInfo.className = 'product-info';
+                
+                productInfo.innerHTML = `
+                    <h3 class="product-name">${product.name}</h3>
+                    <p class="product-description">${product.description}</p>
+                    <div class="product-specs">
+                        ${product.specs.map(spec => `<span class="spec-tag">${spec}</span>`).join('')}
+                    </div>
+                    <div class="product-price">$${product.price.toFixed(2)}</div>
+                    <button class="cart-btn" onclick="addToCart(${product.id})">
+                        <i class="fas fa-shopping-cart"></i>
+                        Add to Cart
+                    </button>
+                `;
+                
+                productCard.appendChild(productInfo);
+                productsGrid.appendChild(productCard);
+            });
+        }
+
+        // Filter and sort products
+        function getFilteredAndSortedProducts() {
+            let filtered = beautyTools;
+            
+            // Apply search filter
+            if (currentSearch) {
+                const searchLower = currentSearch.toLowerCase();
+                filtered = filtered.filter(product => 
+                    product.name.toLowerCase().includes(searchLower) ||
+                    product.description.toLowerCase().includes(searchLower) ||
+                    product.specs.some(spec => spec.toLowerCase().includes(searchLower))
+                );
+            }
+            
+            // Apply category filter
+            if (currentFilter !== 'all') {
+                filtered = filtered.filter(product => product.category === currentFilter);
+            }
+            
+            // Apply sorting
+            filtered.sort((a, b) => {
+                switch(currentSort) {
+                    case 'price-low':
+                        return a.price - b.price;
+                    case 'price-high':
+                        return b.price - a.price;
+                    default: // name
+                        return a.name.localeCompare(b.name);
+                }
+            });
+            
+            return filtered;
+        }
+
+        // Update products based on current filters
+        function updateProducts() {
+            const filteredProducts = getFilteredAndSortedProducts();
+            renderProducts(filteredProducts);
+        }
+
+        // Setup event listeners
+        function setupEventListeners() {
+            // Search input
+            searchInput.addEventListener('input', (e) => {
+                currentSearch = e.target.value;
+                updateProducts();
+            });
+            
+            // Filter buttons
+            filterButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    filterButtons.forEach(btn => btn.classList.remove('active'));
+                    button.classList.add('active');
+                    currentFilter = button.getAttribute('data-filter');
+                    updateProducts();
+                });
+            });
+            
+            // Sort select
+            sortSelect.addEventListener('change', (e) => {
+                currentSort = e.target.value;
+                updateProducts();
+            });
+        }
+
+        // Add to cart function
+        function addToCart(productId) {
+            const product = beautyTools.find(p => p.id === productId);
+            alert(`Added "${product.name}" to cart!`);
+        }
+
+        // Initialize the app when DOM is loaded
+        document.addEventListener('DOMContentLoaded', initApp);
+    </script>
+</body>
+</html>
