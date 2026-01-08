@@ -691,9 +691,11 @@
 </head>
 <body>
     <header>
-        <div class="logo
-            <i class="fas fa-industry"></i>
+
+        <div class="logo">
+            <i class="fas fa-industr"></i>
         </div>
+
         <h1>SuperStruct International</h1>
         <p class="company-tagline">Manufacturers and Exporters of Professional Quality Instruments</p>
         <div class="company-description">
@@ -752,8 +754,8 @@
                 <div class="subcategory-controls">
                     <span class="subcategory-label">Filter by Type:</span>
                     <button class="subcategory-btn" data-subcategory="all">All Instruments</button>
-                    <button class="subcategory-btn" data-subcategory="needle-holders">TC Needle Holders (Carbide Tip)</button>
-                    <button class="subcategory-btn" data-subcategory="toenail-cutters-medical">Podiatry Toe Nail Cutters</button>
+                    <button class="subcategory-btn" data-subcategory="needle-holders">Needle Holders</button>
+                    <button class="subcategory-btn" data-subcategory="toenail-cutters-medical">Toe Nail Cutters</button>
                     <button class="subcategory-btn" data-subcategory="forceps">Forceps</button>
                     <button class="subcategory-btn" data-subcategory="surgical-scissors">Scissors</button>
                     <button class="subcategory-btn" data-subcategory="other-medical">Other Instruments</button>
@@ -920,6 +922,9 @@
         const professionalTools = [
             // ==================== HAIR DRESSING SCISSORS ====================
             // J2 & 440C Polished Scissors
+
+
+
             {
                 id: 1,
                 name: "J2 Steel Professional Scissors 5.5 Straight",
@@ -2136,13 +2141,16 @@
                 description: "Professional grade boxing gloves with genuine leather construction.",
                 specs: ["Genuine Leather", "Multiple Weights", "Velcro Strap", "Shock Absorbing", "Training & Competition", "Export Quality"],
                 photo: "https://i.ibb.co/xtbN92FX/BG1003.jpg"
-            }
+            },
     
 
 
 
-  ];
 
+
+
+
+                   ];
 
         // DOM Elements
         const productsGrid = document.getElementById('productsGrid');
@@ -2297,7 +2305,7 @@
             // Apply main category filter
             if (currentCategory !== 'all') {
                 filtered = filtered.filter(product => product.category === currentCategory);
-s            }
+            }
             
             // Apply subcategory filter
             if (currentSubcategory !== 'all') {
